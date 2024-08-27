@@ -17,6 +17,7 @@ app.use("/categories",router.categoryRouter)
 app.use("/products",router.productRouter)
 app.use("/sub-categories",router.subCategoryRouter)
 app.use("/brands",router.brandRouter)
+app.use("/users", router.userRouter)
 
 
 

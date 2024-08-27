@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { userType } from "../../src/utils/constant/enums.js";
 
 const { model, Schema } = mongoose;
 const userSchema = new Schema({
@@ -12,6 +13,7 @@ const userSchema = new Schema({
         required : true,
         unique :true,
         trim:true,
+        lowercase:true
     },
     password:{
         type : String,
@@ -20,8 +22,9 @@ const userSchema = new Schema({
     },
     userType:{
         type : String,
-        required : true,
-        enum:["Buyer","Admin"]
+        required : false,
+        enum:["Buyer","Admin"],
+        default:"Buyer"
     },
     age:{
         type : Number,
@@ -38,7 +41,7 @@ const userSchema = new Schema({
     },
     isEmailverified:{
         type : Boolean,
-        default :false
+        default :true
     },
     isMarkedAsDeleted:{
         type : Boolean,
