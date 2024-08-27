@@ -1,6 +1,6 @@
 import { comparePassword, hashpassword } from "../../utils/index.js"
 import { ErrorHandleClass } from "../../utils/index.js"
-import { User } from "../../../DB/models/index.js"
+import { Addresses, User } from "../../../DB/models/index.js"
 import { generateToken , verifyToken } from "../../utils/index.js"
 import { sendEmail } from "../../services/send-email.service.js"
 
@@ -9,7 +9,7 @@ import { sendEmail } from "../../services/send-email.service.js"
 *@api {signUP} /user/signUp  signUp
 */
 export const signUP = async(req,res,next)=>{
-    const{username, email, password  ,age, gender ,phone} = req.body
+    const{username, email, password  ,age, gender ,phone , country , city, postalCode , buildingNo , flootNo , addressLabel} = req.body
     //check if email exist
     const isEmailExist = await User.findOne({email})
     if(isEmailExist){
@@ -25,12 +25,30 @@ export const signUP = async(req,res,next)=>{
         password : Pass,
         age,
         gender,
-        phone
+        phone 
     })
+    
+    const adderssObject = new Addresses({
+        userId : user._id,
+        country,
+        city,
+        postalCode,
+        buildingNo,
+        flootNo,
+        addressLabel,
+        isDefualt: true
+    })
+    //save data
     const newUser = await user.save()
+    const savedAddress = await adderssObject.save() 
     if(!newUser){
         return next(new ErrorHandleClass("user not created",500))
     }
+    if(!savedAddress){
+        return next(new ErrorHandleClass("user adress has problem",500))
+    }
+    
+
     //generate token 
     const token = generateToken({payload:{_id : newUser._id}} )
     //send email to verify
@@ -38,7 +56,7 @@ export const signUP = async(req,res,next)=>{
     await sendEmail({to : email , subject : "verify your email" , html : `<p>please verify your email by click on the link below <a href='${req.protocol}://${req.headers.host}/user/verify-account?token=${token}'>Link</a></p>`})
 
     //return response
-    return res.status(201).json({message : "user created successfully" , newUser})
+    return res.status(201).json({message : "user created successfully" , newUser , savedAddress})
     
 }  
 
