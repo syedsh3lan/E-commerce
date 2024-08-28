@@ -79,3 +79,28 @@ export const updateAddress = async(req,res,next)=>{
     //send response
     res.status(200).json({message : "address updated successfully" , updatedAddress})
 }
+
+/** 
+*@api {put} /address/deleteAddress  delete address
+*/
+
+export const softDeleteAddress = async(req,res,next)=>{
+    //get data
+    const {addressId} = req.params
+    const userId = req.authUser._id
+
+    //find el address and delete
+    const address = await Addresses.findOneAndUpdate(
+        {userId , _id:addressId , isMarkedAsDeleted:false},
+        {isMarkedAsDeleted:true , isDefualt : false},
+        {new:true}
+    )
+    
+    //check if address not found
+    if(!address){
+        return next(new ErrorHandleClass("this address is not exist",400))
+    }
+    //send response
+    res.status(200).json({message : "address deleted successfully" , address})
+}
+
