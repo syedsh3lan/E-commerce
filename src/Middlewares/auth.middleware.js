@@ -1,6 +1,6 @@
 
-import User from "../../DB/models/index.js"
-import { verifyToken } from "../utils/index.js";
+import {User} from "../../DB/models/index.js";
+import { verifyToken } from "../utils/token.utils.js";
 
 export const auth = ()=>{
     return async(req ,res ,next)=>{
@@ -17,17 +17,20 @@ export const auth = ()=>{
             }
             // split the token and take the token only with out prefix
             const originalToken = token.split(" ")[1]
+           
             
 
             //decode el token
-            const decodedData = verifyToken({originalToken})
+            const decodedData = verifyToken({token : originalToken})
+           
             
-            if(!decodedData?._id){
+            
+            if(!decodedData?.payload._id){
                 return res.status(400).json({message : "invalid token payload"})
             }
 
             //find user to use it in another middlewares
-            const user =await User.findById(decodedData?._id)
+            const user =await User.findById(decodedData?.payload._id)
             if(!user){
                 return res.status(404).json({message : "plz signup "})
             }

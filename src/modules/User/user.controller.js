@@ -55,8 +55,8 @@ export const signUP = async(req,res,next)=>{
 
     await sendEmail({to : email , subject : "verify your email" , html : `<p>please verify your email by click on the link below <a href='${req.protocol}://${req.headers.host}/user/verify-account?token=${token}'>Link</a></p>`})
 
-    //return response
-    return res.status(201).json({message : "user created successfully" , newUser , savedAddress})
+    //send response
+     res.status(201).json({message : "user created successfully" , newUser , savedAddress})
     
 }  
 
@@ -103,8 +103,8 @@ export const login = async(req,res,next)=>{
 
     //generate token
     const accessToken = generateToken({payload:{_id : user._id}})
-    //return response
-    return res.status(200).json({message : "login successfully" , accessToken})
+    //send response
+    res.status(200).json({message : "login successfully" , accessToken})
 }
 
 
