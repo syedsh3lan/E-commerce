@@ -1,4 +1,5 @@
 import { Addresses } from "../../../DB/models/index.js"
+import { ErrorHandleClass } from "../../utils/index.js"
 
 
 
@@ -38,4 +39,41 @@ export const addAddress = async(req,res,next)=>{
     res.status(201).json({message : "address created successfully" , savedAddress})
 
 
+}
+
+
+/** 
+*@api {put} /address/updateAddress  update address
+*/
+export const updateAddress = async(req,res,next)=>{
+    //get data
+    const {country , city, postalCode , buildingNo , flootNo , addressLabel , setAsDefualt}=req.body
+    const userId = req.authUser._id
+    const {addressId} = req.params
+
+    //check if address exist
+    const address = await Addresses.findOne({_id:addressId , userId , isMarkedAsDeleted : false})
+    if(!address){
+        return next(new ErrorHandleClass("this address is not exist",400))
+    }
+
+    //push data
+    if(country) address.country = country
+    if(city) address.city = city
+    if(postalCode) address.postalCode = postalCode  
+    if(buildingNo) address.buildingNo = buildingNo
+    if(flootNo) address.flootNo = flootNo
+    if(addressLabel) address.addressLabel = addressLabel
+    if([true ,false].includes(setAsDefualt)){
+        address.isDefualt = [true ,false].includes(setAsDefualt) ? setAsDefualt : false
+        await Addresses.updateOne({userId , isDefualt : true},{isDefualt : false})
+    }
+
+    //save data
+    const updatedAddress = await address.save()
+    if(!updatedAddress){
+        return next(new ErrorHandleClass("address not updated",500))
+    }
+    //send response
+    res.status(200).json({message : "address updated successfully" , updatedAddress})
 }

@@ -8,6 +8,7 @@ const addressRouter = Router()
 
 
 addressRouter.post("/addAddress" ,auth() ,errorHandle(controller.addAddress))
+addressRouter.put("/updateAddress/:addressId" ,auth() ,errorHandle(controller.updateAddress))
 
 
 
