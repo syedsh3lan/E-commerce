@@ -104,3 +104,19 @@ export const softDeleteAddress = async(req,res,next)=>{
     res.status(200).json({message : "address deleted successfully" , address})
 }
 
+/** 
+*@api {get} /address/getAllAddress  get all address
+*/
+
+export const getAllAddresses = async(req,res,next)=>{
+    //get data
+    const userId = req.authUser._id
+
+    //get all address
+    const ALLAddresses = await Addresses.find({userId , isMarkedAsDeleted : false})
+    if(!ALLAddresses){
+        return next(new ErrorHandleClass("this Addresses is not exist",400))
+    }
+    //send response
+    res.status(200).json({message : "address fetched successfully" , ALLAddresses})
+}
