@@ -64,9 +64,11 @@ export const updateAddress = async(req,res,next)=>{
     if(buildingNo) address.buildingNo = buildingNo
     if(flootNo) address.flootNo = flootNo
     if(addressLabel) address.addressLabel = addressLabel
-    if([true ,false].includes(setAsDefualt)){
-        address.isDefualt = [true ,false].includes(setAsDefualt) ? setAsDefualt : false
-        await Addresses.updateOne({userId , isDefualt : true},{isDefualt : false})
+    if(setAsDefualt === true){
+        address.isDefualt = true
+        await Addresses.updateOne({userId , isDefualt : true , _id:{ $ne :address._id} },{isDefualt : false})
+    }else if(setAsDefualt === false){
+        address.isDefualt = false
     }
 
     //save data
