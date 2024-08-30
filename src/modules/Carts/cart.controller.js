@@ -4,10 +4,8 @@ import { ErrorHandleClass } from "../../utils/index.js"
 
 
 /**
- * @api {post} /carts/addToCart     add cart
+ * @api {post} /carts/addToCart     add to cart
  */
-
-
 export const addToCart = async (req, res, next) => {
     //get data
     const userId = req.authUser._id
@@ -54,3 +52,35 @@ export const addToCart = async (req, res, next) => {
     //send response
     res.status(201).json({message : "product added successfully" , cart})
 } 
+
+/**
+ * @api {put} /carts/removeFromCart     remove from cart
+ */
+export const removeFromCart = async(req,res,next)=>{
+    //get data
+    const userId = req.authUser._id
+    const {productId} = req.params
+
+    //check if cart and product exist
+    const cart = await Cart.findOne({userId , 'products.productId':productId})
+    if(!cart){
+        return next(new ErrorHandleClass("this cart is not exist",400))
+    }
+
+    //remove product from cart
+    cart.products = cart.products.filter(p=>p.productId != productId)
+    //check if cart is empty
+    if(cart.products.length === 0){
+        await Cart.deleteOne({userId})
+        return res.status(200).json({message : "product remove from cart and cart is empty"})
+    }
+    //handle the new total price
+    cart.totalPrice =0
+    cart.products.forEach(p=>{
+        cart.totalPrice += p.price * p.quantity
+    })
+    //save data
+    await cart.save()
+    //send response
+    res.status(200).json({message : "product remove from cart successfully" , cart})
+}
