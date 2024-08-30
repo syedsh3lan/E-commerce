@@ -84,3 +84,52 @@ export const removeFromCart = async(req,res,next)=>{
     //send response
     res.status(200).json({message : "product remove from cart successfully" , cart})
 }
+
+/**
+ * @api {post} /carts/updateCart    update cart
+ */
+export const updateCart = async(req,res,next)=>{
+    //get data
+    const userId = req.authUser._id
+    const {productId}= req.params
+    const {quantity} = req.body
+
+    const cart = await Cart.findOne({userId , 'products.productId':productId})
+    if(!cart){
+        return next(new ErrorHandleClass("this cart or product is not exist",400))
+    }
+    //check if quantity is valid
+    const product = await Product.findOne({_id :productId , stock :{$gte : quantity} })
+    if(!product){
+        return next(new ErrorHandleClass("stock for this product is less than your quantity you need ",400))
+    }
+
+    //update cart
+    const productsIndex = cart.products.findIndex(p => p.productId.toString() == product._id.toString())
+    cart.products[productsIndex].quantity = quantity
+
+    cart.totalPrice = 0
+    cart.products.forEach(p=>{
+        cart.totalPrice += p.price * p.quantity
+    })
+
+    //save data
+    await cart.save()
+    //send response
+    res.status(200).json({message : "cart updated successfully" , cart})
+}
+
+/**
+ * @api {get} /carts/getCart     get cart
+ */
+export const getCart  = async(req,res,next)=>{
+    //get data
+    const userId = req.authUser._id
+    const cart = await Cart.findOne({userId})
+    if(!cart){
+        return next(new ErrorHandleClass("this cart is not exist",400))
+    }
+    //send response
+    res.status(200).json({message : "cart fetched successfully" , cart})
+}
+
