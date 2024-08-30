@@ -7,6 +7,7 @@ const cartRouter = Router()
 cartRouter.post("/addToCart/:productId" ,auth(),errorHandle(controller.addToCart) )
 cartRouter.put("/removeFromCart/:productId" , auth(), errorHandle(controller.removeFromCart))
 cartRouter.post("/updateCart/:productId" , auth(), errorHandle(controller.updateCart))
+cartRouter.get("/getCart" , auth(), errorHandle(controller.getCart))
 
 
 

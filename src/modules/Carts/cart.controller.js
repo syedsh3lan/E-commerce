@@ -119,3 +119,17 @@ export const updateCart = async(req,res,next)=>{
     res.status(200).json({message : "cart updated successfully" , cart})
 }
 
+/**
+ * @api {get} /carts/getCart     get cart
+ */
+export const getCart  = async(req,res,next)=>{
+    //get data
+    const userId = req.authUser._id
+    const cart = await Cart.findOne({userId})
+    if(!cart){
+        return next(new ErrorHandleClass("this cart is not exist",400))
+    }
+    //send response
+    res.status(200).json({message : "cart fetched successfully" , cart})
+}
+
