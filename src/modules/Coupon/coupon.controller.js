@@ -57,3 +57,20 @@ export const getCoupons = async(req, res, next) => {
     //send response
     res.status(200).json({message : "coupons fetched successfully" , coupons})
 }
+
+/**
+ * @api {get} /coupons/getCouponById/:couponId     get coupon by id
+ */
+export const getCouponById = async(req , res , next)=>{
+    //get data
+    const {couponId} = req.params
+    //find coupon
+    const coupon  = await Coupon.findById({_id : couponId})
+    if(!coupon){
+        return next(new ErrorHandleClass("coupon not found" , 404))
+    }
+    //send response
+    res.status(200).json({message : "coupon fetched successfully" , coupon})
+
+
+}

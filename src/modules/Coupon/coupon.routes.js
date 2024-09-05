@@ -8,7 +8,7 @@ const couponRouter = Router()
 
 couponRouter.post("/createCoupon",auth(),validationMiddleware(createCouponSchema),errorHandle(controller.createCoupon))
 couponRouter.get("/getCoupons" , errorHandle(controller.getCoupons))
-
+couponRouter.get("/getCouponById/:couponId" , errorHandle(controller.getCouponById))
 
 
 
