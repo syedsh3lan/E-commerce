@@ -26,7 +26,7 @@ const couponSchema = new Schema({
         type : Date,
         required:true
     },
-    users:[{
+    Users:[{
         userId:{
             type:mongoose.Schema.Types.ObjectId,
             ref:"User",
@@ -46,6 +46,11 @@ const couponSchema = new Schema({
     isEnable :{
         type:Boolean,
         default:true
+    },
+    createdBy:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"User",
+        required:true
     }
     
 
