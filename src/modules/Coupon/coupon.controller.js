@@ -1,5 +1,4 @@
 import { Coupon, User } from "../../../DB/models/index.js"
-import { errorHandle } from "../../Middlewares/index.js"
 import { ErrorHandleClass } from "../../utils/index.js"
 
 
@@ -9,8 +8,6 @@ import { ErrorHandleClass } from "../../utils/index.js"
 /**
  * @api {post} /coupons/createCoupon     create coupon
  */
-
-
 export const createCoupon = async(req, res, next) => {
     //get data
     const {couponCode , couponAmount , couponType , from , till , Users} = req.body
@@ -42,4 +39,21 @@ export const createCoupon = async(req, res, next) => {
     res.status(201).json({ message: "coupon created successfully"  ,newCoupon}) 
 
 
+}
+
+/**
+ * @api {get} /coupons/getCoupons     get coupons
+ */
+export const getCoupons = async(req, res, next) => {
+    //get data
+    const {isEnable} = req.query
+    //find coupons
+    const filters = {}
+    if(isEnable){
+        filters.isEnable = isEnable === "true" ? true : false
+    }
+    const coupons = await Coupon.find(filters)
+
+    //send response
+    res.status(200).json({message : "coupons fetched successfully" , coupons})
 }
