@@ -1,7 +1,7 @@
 import { ErrorHandleClass } from "../utils/error-class.utils.js";
 
 
-const reqKey = ["body","query","params","headers"];
+const reqKey = ["body","query","params","headers","authUser"];
 
 
 export const validationMiddleware = (schema)=>{
