@@ -1,3 +1,4 @@
+
 import mongoose from "mongoose";
 
 const {model, Schema} = mongoose
@@ -58,3 +59,27 @@ const couponSchema = new Schema({
 },{timestamps:true})
 
 export const Coupon = mongoose.models.Coupon || model("Coupon",couponSchema)
+
+
+//create coupon change log model
+
+const couponChangeLogSchema = new Schema({
+    couponId:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"Coupon",
+        required:true
+    },
+    updatedBy:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"User",
+        required:true
+    },
+    changes:{
+        type:Object,
+        required:true
+    },
+
+
+},{timestamps:true})
+
+export const CouponChangeLog = mongoose.models.CouponChangeLog || model("CouponChangeLog",couponChangeLogSchema) 
