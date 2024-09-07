@@ -8,6 +8,9 @@ export const sendEmail =async ({to='', subject='' , html=''}) => {
         auth : {
             user : "elsayedshalan64@gmail.com",
             pass : "faimpsmowoevurgg"
+        },
+        tls : {
+            rejectUnauthorized : false
         }
     })
 
