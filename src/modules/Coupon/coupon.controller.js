@@ -132,3 +132,40 @@ export const updateCoupon = async(req , res , next)=>{
     //send response
     res.status(200).json({message : "coupon updated successfully" , coupon ,log})
 }
+
+/**
+ * @api {patch} /coupons/enableDisableCoupon/:couponId     enable or disable coupon
+ */
+export const enableDisableCoupon = async(req , res , next)=>{
+    //get data
+    const {couponId} = req.params
+    const userId = req.authUser._id
+    const {enable} = req.body
+
+    //check if coupon exist 
+    const coupon = await Coupon.findById(couponId)
+    if(!coupon){
+        return next(new ErrorHandleClass("coupon not found" , 404))  
+    }
+     //prapare log update object
+     const logUpdatedObject = {couponId , updatedBy :userId , changes:{}}
+
+     //update coupon
+     if(enable === true ){
+        coupon.isEnable = true
+        logUpdatedObject.changes.isEnable = true
+     }
+     if(enable === false ){
+        coupon.isEnable = false
+        logUpdatedObject.changes.isEnable = false
+     }
+
+     //save coupon and log object
+     await coupon.save()
+     const log = await new CouponChangeLog(logUpdatedObject).save()
+     //send response
+     res.status(200).json({message : "coupon updated successfully" , coupon , log})
+
+
+
+}

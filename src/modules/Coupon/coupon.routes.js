@@ -10,6 +10,6 @@ couponRouter.post("/createCoupon",auth(),validationMiddleware(createCouponSchema
 couponRouter.get("/getCoupons" , errorHandle(controller.getCoupons))
 couponRouter.get("/getCouponById/:couponId" , errorHandle(controller.getCouponById))
 couponRouter.put("/updateCoupon/:couponId",auth(),errorHandle(validationMiddleware(updateCouponSchema)),errorHandle(controller.updateCoupon))
-
+couponRouter.patch("/enableDisableCoupon/:couponId",auth(),errorHandle(controller.enableDisableCoupon))
 
 export {couponRouter}
